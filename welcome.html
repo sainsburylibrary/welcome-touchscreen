@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Welcome to the Sainsbury Library</title>
+    <link rel="preload" as="image" href="assets/slide-01.jpg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* Respect reduced motion on low-power devices */
+      @media (prefers-reduced-motion: reduce) {
+        .reveal .slides {
+          transition: none !important;
+        }
+      }
+
+      .wl-header {
+        display: flex; /* put title and logos on one row */
+        flex-wrap: nowrap;
+        align-items: flex-start !important;
+        gap: 1rem; /* space between title and logos if they wrap */
+        justify-content: space-between;
+      }
+
+      .wl-header h1 {
+        text-align: left;
+        font-size: 3.5rem !important;
+        margin: 0; /* remove default h1 spacing */
+        padding: 0;
+        vertical-align: top;
+        line-height: 1;
+      }
+      @media (max-width: 600px) {
+        .wl-header h1 {
+          font-size: 1rem;
+        }
+      }
+
+      .wl-logos {
+        height: 7rem;
+        width: auto;
+        display: block; /* remove baseline gap */
+        object-fit: contain; /* scale nicely */
+        align-self: flex-start; /* pin to top within flex header */
+        transform: translateY(-10px);
+      }
+
+      /* Keep slides full-bleed and tap-friendly */
+      .slide-img {
+        display: block; /* remove inline gap (baseline issue) */
+        width: 100%;
+        height: auto;
+        touch-action: manipulation;
+      }
+      .bubble {
+        background: #f4db82; /* yellow fill */
+        color: #0e4572; /* dark blue text */
+        font-weight: 600;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 50%;
+        width: 160px;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-block-end: 0;
+        overflow: hidden;
+        text-align: center;
+      }
+      a.bubble:visited,
+      a.bubble {
+        color: #0e4572;
+      }
+      .wl-bubbles {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5em; /* space between bubbles */
+        margin-top: 2em;
+      }
+
+      /* bump every even bubble downward */
+      .wl-bubbles .bubble:nth-child(even) {
+        transform: translateY(30px);
+      }
+
+      /* bump every odd bubble upward */
+      .wl-bubbles .bubble:nth-child(odd) {
+        transform: translateY(-20px);
+      }
+      .subslide a.bubble {
+        background-color: #f4e7b0;
+      }
+      p {
+        font-size: 1.8rem !important;
+        text-align: left;
+      }
+      h2 {
+        text-align: left;
+      }
+      /* Slide styling */
+      /* Subslide layout */
+      section.subslide {
+        position: relative;
+        overflow: hidden; /* hide circle overflow */
+        padding: min(8vh, 80px) min(6vw, 64px);
+        background: #0e4572; /* dark blue */
+      }
+
+      /* Giant yellow circle coming in from the left */
+      section.subslide::before {
+        content: "";
+        position: absolute;
+        left: -30vmax;
+        top: -50vmax;
+        width: min(90vmax, 900px);
+        min-width: 1200px;
+        height: 145vmax;
+        background: #f4db82; /* warm yellow */
+        border-radius: 50%;
+        z-index: 0;
+      }
+
+      /* Make the actual text sit above the circle */
+      section.subslide > :not(img.slide-icon) {
+        position: relative;
+        z-index: 1;
+        max-width: 60ch; /* readable line length */
+        color: #13293c; /* dark ink for legibility */
+      }
+
+      /* Typography to match the screenshot feel */
+      section.subslide h2 {
+        margin: 0 0 0.6em 0;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1.1;
+        color: #0e4572 !important; /* navy text on yellow */
+      }
+
+      section.subslide p {
+        margin: 0 0 1.2em 0;
+        font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+        line-height: 1.45;
+      }
+
+      /* Make the bold time pop a bit more like in the screenshot */
+      section.subslide p strong {
+        font-weight: 800;
+      }
+
+      /* Icon on the right side */
+      section.subslide i.fa-solid {
+        position: absolute;
+        color: #ffffff;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        font-size: clamp(6rem, 20vw, 12rem);
+      }
+
+      /* Respect reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        section.subslide::before {
+          transition: none !important;
+        }
+      }
+      p a {
+        color: #0e4572;
+        text-decoration: underline !important;
+      }
+      .slide-icon {
+        position: relative;
+        z-index: 1;
+        float: right;
+        margin-left: 2rem; /* spacing between text and image */
+        margin-top: 0.5rem; /* small top offset */
+        width: clamp(
+          14rem,
+          28vw,
+          24rem
+        ); /* responsive size similar to design */
+        height: auto;
+        max-width: 40%; /* keep it from overwhelming small screens */
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/white.css"
+    />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!-- Each section is a slide. Replace with your content or text+images -->
+        <!-- 1) FIRST SCREEN -->
+
+        <section id="welcome" data-background-color="#0e4572" class="welcome">
+          <header class="wl-header">
+            <h1>Welcome to the Sainsbury Library</h1>
+            <img
+              class="wl-logos"
+              aria-label="Logos"
+              src="img/oxford-sbs-slib-combined.png"
+              alt="University of Oxford, Saïd Business School, The Sainsbury Library"
+            />
+          </header>
+          <p>
+            <strong>Double tap</strong> on the circles below for more
+            information
+          </p>
+
+          <nav class="wl-bubbles" aria-label="Main sections">
+            <!-- Use data-h / data-v to send users to slide indices -->
+            <a class="bubble" href="#/opening-hours">Opening<br />Hours</a>
+            <a class="bubble" href="#/print-copy-scan"
+              >Print, copy<br />and scan</a
+            >
+            <a class="bubble" href="#/wifi-it">Wi-Fi and IT</a>
+            <a class="bubble" href="#/books">Books</a>
+            <a class="bubble" href="#/help">Help</a>
+          </nav>
+        </section>
+
+        <!-- 2) EXAMPLE DESTINATION SLIDES (one per bubble) -->
+        <section
+          id="opening-hours"
+          class="subslide"
+          data-background-color="#0e4572"
+        >
+          <h2>Opening Hours</h2>
+          <img src="img/01-opening.png" alt="Clock Icon" class="slide-icon" />
+          <p>
+            If you are an SBS student with an SBS access card, you can enter the
+            library whenever the Park End Street building is open! Currently
+            this is <strong>8am-10.30pm</strong>.
+          </p>
+          <p>
+            Library staff are available to help during term time M-F 9am-7pm.
+            (Vacation M-F 9am-5pm).
+          </p>
+          <nav style="margin-top: 2em; text-align: center">
+            <a class="bubble" href="#/welcome">Home</a>
+          </nav>
+        </section>
+        <section
+          id="print-copy-scan"
+          class="subslide"
+          data-background-color="#0e4572"
+        >
+          <h2>Print, copy and scan (PCAS)</h2>
+          <img src="img/02-pcas.png" alt="Printing Icon" class="slide-icon" />
+
+          <p>
+            PCAS is the service used across the Bodleian Libraries to print,
+            copy and scan.
+          </p>
+          <p>
+            Guides are available at
+            <a href="https://www.bodleian.ox.ac.uk/services/pcas"
+              >www.bodleian.ox.ac.uk/services/pcas</a
+            >
+          </p>
+          <nav style="margin-top: 2em; text-align: center">
+            <a class="bubble" href="#/welcome">Home</a>
+          </nav>
+        </section>
+        <section id="wifi-it" class="subslide" data-background-color="#0e4572">
+          <h2>Wi-Fi and IT</h2>
+          <img src="img/03-wi-fi.png" alt="Wi-Fi Icon" class="slide-icon" />
+          <p>
+            Use Eduroam if you are a member of the University. The Cloud Wi-Fi
+            network is available for anyone without an Oxford Single Sign On.
+          </p>
+
+          <p>
+            PCs and iMacs are available for SBS students on both floors. Use
+            your SBS network login.
+          </p>
+
+          <nav style="margin-top: 2em; text-align: center">
+            <a class="bubble" href="#/welcome">Home</a>
+          </nav>
+        </section>
+        <section id="books" class="subslide" data-background-color="#0e4572">
+          <h2>Books</h2>
+          <img src="img/04-books.png" alt="Books Icon" class="slide-icon" />
+          <p>
+            Search for all Sainsbury Library books in our library catalogue SOLO
+            <a href="https://solo.bodleian.ox.ac.uk/"
+              >https://solo.bodleian.ox.ac.uk/</a
+            >
+          </p>
+
+          <p>
+            Use the self-issue kiosk at the helpdesk to borrow/return books. You
+            will need your Bod card.
+          </p>
+
+          <nav style="margin-top: 2em; text-align: center">
+            <a class="bubble" href="#/welcome">Home</a>
+          </nav>
+        </section>
+        <section id="help" class="subslide" data-background-color="#0e4572">
+          <h2>Help</h2>
+          <img src="img/05-help.png" alt="Help Icon" class="slide-icon" />
+          <p>
+            Library staff are here to help! Feel free to ask us any questions at
+            the helpdesk. We have created a guide for business students at:
+            <a href="https://libguides.bodleian.ox.ac.uk/business"
+              >https://libguides.bodleian.ox.ac.uk/business</a
+            >
+          </p>
+
+          <p>
+            You can also email <strong>library@sbs.ox.ac.uk</strong> with
+            queries.
+          </p>
+
+          <nav style="margin-top: 2em; text-align: center">
+            <a class="bubble" href="#/welcome">Home</a>
+          </nav>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: true,
+        // Keep it light for low-powered browsers:
+        // Keep it light for low-powered browsers:
+        // Use "none" for fastest performance; change to "fade" for a smoother effect if device performance allows.
+        transition: "none", // Change to 'fade' for animation
+        backgroundTransition: "none",
+        // Disable parallax & other heavy features by leaving them unset
+      });
+    </script>
+  </body>
+</html>
