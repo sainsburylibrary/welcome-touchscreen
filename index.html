@@ -140,7 +140,8 @@
         /* Use variables so ::before can extend into the padding area */
         --pad-y: min(8vh, 80px);
         --pad-x: min(6vw, 64px);
-        --panel-w: calc(clamp(0px, 82vw, 1050px) + var(--pad-x));
+        /* Wider max width so the yellow panel scales on large displays */
+        --panel-w: calc(clamp(0px, 82vw, 1400px) + var(--pad-x));
         --content-gap: min(3vw, 24px);
         --curve-avoid: 0px; /* extra right buffer near curved edge */
         /* Reserve room for the incoming icon on wider screens */
@@ -237,6 +238,38 @@
         }
         section.subslide {
           --curve-avoid: min(20vw, 112px);
+        }
+      }
+
+      /* Large touch displays: widen panel and upsize type */
+      @media (min-width: 1600px) {
+        section.subslide {
+          /* Grow panel but keep some blue area on the right */
+          --panel-w: calc(min(80vw, 1800px) + var(--pad-x));
+          --pad-y: min(10vh, 120px);
+          --pad-x: min(7vw, 100px);
+        }
+        section.subslide h2 {
+          font-size: clamp(2.6rem, 3.2vw, 5rem);
+          line-height: 1.12;
+        }
+        section.subslide p {
+          font-size: clamp(1.15rem, 1.4vw, 1.6rem);
+          line-height: 1.55;
+        }
+      }
+
+      @media (min-width: 2200px) {
+        section.subslide {
+          --panel-w: calc(min(78vw, 2200px) + var(--pad-x));
+          --pad-y: min(10vh, 140px);
+          --pad-x: min(8vw, 140px);
+        }
+        section.subslide h2 {
+          font-size: clamp(3rem, 2.8vw, 6rem);
+        }
+        section.subslide p {
+          font-size: clamp(1.25rem, 1.2vw, 1.8rem);
         }
       }
 
