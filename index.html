@@ -10,6 +10,21 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <style>
+      /* Make the deck fill the viewport with minimal margins */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      } /* remove default browser margins */
+      .reveal {
+        height: 100vh;
+      }
+      .reveal .slides {
+        height: 100%;
+      }
+
       /* Respect reduced motion on low-power devices */
       @media (prefers-reduced-motion: reduce) {
         .reveal .slides {
@@ -23,9 +38,15 @@
         align-items: flex-start !important;
         gap: 1rem; /* space between title and logos if they wrap */
         justify-content: space-between;
+        margin: 0 10%;
+      }
+
+      #instructions {
+        margin: 0 10%;
       }
 
       .wl-header h1 {
+        text-transform: capitalize !important;
         text-align: left;
         font-size: 3.5rem !important;
         margin: 0; /* remove default h1 spacing */
@@ -96,33 +117,53 @@
       .subslide a.bubble {
         background-color: #f4e7b0;
       }
+
+      .subslide nav {
+        flex-flow: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+
       p {
         font-size: 1.8rem !important;
         text-align: left;
       }
       h2 {
         text-align: left;
+        text-transform: capitalize !important;
       }
       /* Slide styling */
       /* Subslide layout */
       section.subslide {
         position: relative;
         overflow: hidden; /* hide circle overflow */
-        padding: min(8vh, 80px) min(6vw, 64px);
+        /* Use variables so ::before can extend into the padding area */
+        --pad-y: min(8vh, 80px);
+        --pad-x: min(6vw, 64px);
+        --panel-w: calc(clamp(0px, 82vw, 1050px) + var(--pad-x));
+        --content-gap: min(3vw, 24px);
+        --curve-avoid: 0px; /* extra right buffer near curved edge */
+        /* Reserve room for the incoming icon on wider screens */
+        --icon-w: min(40vw, 290px);
+        --icon-gap: min(4vw, 40px);
+        --icon-reserve: 0px; /* enabled via media query */
+        padding: var(--pad-y) var(--pad-x);
         background: #0e4572; /* dark blue */
+        min-height: 100vh; /* ensure each subslide fills the screen */
       }
 
-      /* Giant yellow circle coming in from the left */
+      /* Large warm-yellow panel occupying ~80% of screen width */
       section.subslide::before {
         content: "";
         position: absolute;
-        left: -30vmax;
-        top: -50vmax;
-        width: min(90vmax, 900px);
-        min-width: 1200px;
-        height: 145vmax;
+        /* Extend into the parent's padding so there are no blue gaps */
+        left: calc(-1 * var(--pad-x));
+        top: calc(-1 * var(--pad-y));
+        bottom: calc(-1 * var(--pad-y));
+        width: var(--panel-w); /* ~80% + left padding */
         background: #f4db82; /* warm yellow */
-        border-radius: 50%;
+        border-top-right-radius: 50vmax; /* deep, circular trailing edge */
+        border-bottom-right-radius: 50vmax;
         z-index: 0;
       }
 
@@ -130,8 +171,23 @@
       section.subslide > :not(img.slide-icon) {
         position: relative;
         z-index: 1;
-        max-width: 60ch; /* readable line length */
+        /* Keep readable and inside the yellow panel */
+        max-width: min(
+          60ch,
+          calc(
+            var(--panel-w) - var(--pad-x) - var(--content-gap) -
+              var(--icon-reserve) - var(--curve-avoid)
+          )
+        );
+        padding-right: var(--curve-avoid);
         color: #13293c; /* dark ink for legibility */
+      }
+
+      /* On wider viewports, keep content clear of the right icon */
+      @media (min-width: 900px) {
+        section.subslide {
+          --icon-reserve: calc(var(--icon-w) + var(--icon-gap));
+        }
       }
 
       /* Typography to match the screenshot feel */
@@ -140,12 +196,48 @@
         font-size: clamp(2rem, 4vw, 3.2rem);
         line-height: 1.1;
         color: #0e4572 !important; /* navy text on yellow */
+        overflow-wrap: anywhere; /* allow long words to wrap */
+        word-break: normal;
+        hyphens: auto;
       }
 
       section.subslide p {
         margin: 0 0 1.2em 0;
-        font-size: clamp(1.05rem, 1.6vw, 1.35rem);
-        line-height: 1.45;
+        font-size: clamp(1rem, 1.6vw, 1.3rem);
+        line-height: 1.5;
+        overflow-wrap: anywhere; /* let long URLs wrap */
+        word-break: normal;
+        hyphens: auto;
+      }
+
+      /* Tighten typography on smaller screens */
+      @media (max-width: 900px) {
+        section.subslide p {
+          font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+          line-height: 1.55;
+        }
+        section.subslide h2 {
+          font-size: clamp(1.4rem, 5.2vw, 2.2rem);
+          line-height: 1.15;
+        }
+        section.subslide {
+          --curve-avoid: min(16vw, 96px);
+        }
+      }
+
+      @media (max-width: 600px) {
+        section.subslide p {
+          font-size: clamp(0.9rem, 3.2vw, 1.05rem);
+          line-height: 1.6;
+          margin-bottom: 1em;
+        }
+        section.subslide h2 {
+          font-size: clamp(1.2rem, 6.4vw, 1.8rem);
+          line-height: 1.2;
+        }
+        section.subslide {
+          --curve-avoid: min(20vw, 112px);
+        }
       }
 
       /* Make the bold time pop a bit more like in the screenshot */
@@ -170,20 +262,40 @@
       p a {
         color: #0e4572;
         text-decoration: underline !important;
+        overflow-wrap: anywhere; /* allow long links to break */
       }
       .slide-icon {
-        position: relative;
+        position: absolute; /* anchor to right like the Prezi layout */
+        padding-right: 2rem;
+        right: min(11vw, 290px);
+        top: 50%;
+        transform: translateY(-50%);
         z-index: 1;
-        float: right;
-        margin-left: 2rem; /* spacing between text and image */
-        margin-top: 0.5rem; /* small top offset */
-        width: clamp(
-          14rem,
-          28vw,
-          24rem
-        ); /* responsive size similar to design */
-        height: auto;
+        width: 290px;
+        /* height: clamp(12rem, 42vh, 22rem);*/
         max-width: 40%; /* keep it from overwhelming small screens */
+        filter: drop-shadow(
+          -10px 6px 6px rgba(0, 0, 0, 0.5)
+        ); /* stronger shadow, mostly on left side */
+      }
+
+      /* On narrow screens, let text flow around the image */
+      @media (max-width: 899px) {
+        .slide-icon {
+          position: static; /* participate in normal flow */
+          float: right; /* allow text to wrap around */
+          transform: none;
+          right: auto;
+          top: auto;
+          width: min(45%, 260px);
+          height: auto;
+          margin: 0 0 0.75rem 1rem; /* space between text and image */
+          filter: drop-shadow(-6px 4px 6px rgba(0, 0, 0, 0.35));
+        }
+        /* Ensure nav/bubbles don't wrap awkwardly around the floated image */
+        section.subslide nav {
+          clear: both;
+        }
       }
     </style>
     <link
@@ -211,9 +323,8 @@
               alt="University of Oxford, Saïd Business School, The Sainsbury Library"
             />
           </header>
-          <p>
-            <strong>Double tap</strong> on the circles below for more
-            information
+          <p id="instructions">
+            <strong>Tap</strong> on the circles below for more information
           </p>
 
           <nav class="wl-bubbles" aria-label="Main sections">
@@ -337,6 +448,10 @@
         controls: true,
         progress: true,
         center: true,
+        // Fill the browser viewport with small margins
+        width: "100%",
+        height: "100%",
+        margin: 0, // No outer margin around slides
         // Keep it light for low-powered browsers:
         // Keep it light for low-powered browsers:
         // Use "none" for fastest performance; change to "fade" for a smoother effect if device performance allows.
